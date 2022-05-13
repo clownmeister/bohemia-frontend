@@ -1,0 +1,6 @@
+.env
+.idea
+var
+vendor
+public/build
+node_modules
