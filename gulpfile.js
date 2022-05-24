@@ -10,7 +10,6 @@ const cleanCss = require('gulp-clean-css')
 const rename = require('gulp-rename')
 const postcss = require('gulp-postcss')
 const autoprefixer = require('autoprefixer')
-const gcPub = require('gulp-gcloud-publish')
 const eslint = require('gulp-eslint')
 const ts = require('gulp-typescript')
 
