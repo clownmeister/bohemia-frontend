@@ -1,0 +1,59 @@
+networks:
+    internal:
+        external: false
+        driver: bridge
+        name: ${CONTAINER_NAME_PREFIX}-internal
+
+x-defaults: &defaults
+    tty: true
+    restart: ${DOCKER_RESTART_POLICY}
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "10"
+            max-size: "10m"
+
+services:
+    nginx:
+        <<: *defaults
+        image: ${APP_IMAGE}
+        container_name: ${CONTAINER_NAME_PREFIX}-nginx
+        environment:
+            PHP_IDE_CONFIG: "serverName={$APP_HOST}"
+        ports:
+            - ${APP_IP}:${APP_PORT}:80
+        networks:
+            - internal
+        depends_on:
+            - app-php
+        volumes:
+            - ./docker/nginx/conf.d/${ENVIRONMENT}.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./:/var/www
+    php:
+        <<: *defaults
+        build:
+            context: './docker/php'
+            args:
+                DEV_GID: ${DEV_GID}
+                DEV_UID: ${DEV_UID}
+        container_name: ${CONTAINER_NAME_PREFIX}-php
+        user: ${DEV_UID}:${DEV_GID}
+        environment:
+            PHP_IDE_CONFIG: "serverName={$APP_HOST}"
+        networks:
+            internal:
+                aliases:
+                    - php
+        volumes:
+            - ./docker/php/conf.d/php-${ENVIRONMENT}.ini:/usr/local/etc/php/conf.d/zz-php.ini
+            - ./:/var/www
+    npm:
+        <<: *defaults
+        image: ${APP_NPM_IMAGE}
+        container_name: ${CONTAINER_NAME_PREFIX}-npm
+        networks:
+            internal:
+                aliases:
+                    - npm
+        volumes:
+            - ./:/var/www
