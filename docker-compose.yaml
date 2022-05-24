@@ -1,0 +1,110 @@
+networks:
+    internal:
+        external: false
+        driver: bridge
+        name: ${CONTAINER_NAME_PREFIX}-internal
+
+x-defaults: &defaults
+    tty: true
+    restart: ${DOCKER_RESTART_POLICY}
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "10"
+            max-size: "10m"
+
+services:
+    nginx:
+        <<: *defaults
+        image: ${APP_IMAGE}
+        container_name: ${CONTAINER_NAME_PREFIX}-nginx
+        environment:
+            PHP_IDE_CONFIG: "serverName={$APP_HOST}"
+        ports:
+            - ${APP_IP}:${APP_PORT}:80
+        networks:
+            - internal
+        depends_on:
+            - app-php
+        volumes:
+            - ./docker/nginx/conf.d/${ENVIRONMENT}.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./:/var/www
+    php:
+        <<: *defaults
+        build:
+            context: './docker/php'
+            args:
+                DEV_GID: ${DEV_GID}
+                DEV_UID: ${DEV_UID}
+        container_name: ${CONTAINER_NAME_PREFIX}-php
+        user: ${DEV_UID}:${DEV_GID}
+        environment:
+            PHP_IDE_CONFIG: "serverName={$APP_HOST}"
+            MESSENGER_TRANSPORT_DSN: ${MESSENGER_TRANSPORT_DSN}
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT}
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USER: ${DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD}
+            JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+            JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY}
+            JWT_PASSPHRASE: ${JWT_PASSPHRASE}
+            MAILER_DSN: ${MAILER_DSN}
+        networks:
+            internal:
+                aliases:
+                    - php
+        volumes:
+            - ./docker/php/conf.d/php-${ENVIRONMENT}.ini:/usr/local/etc/php/conf.d/zz-php.ini
+            - ./:/var/www
+    mysql:
+        <<: *defaults
+        image: ${APP_MYSQL_IMAGE}
+        container_name: ${CONTAINER_NAME_PREFIX}-mysql
+        networks:
+            internal:
+                aliases:
+                    - mysql
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            APP_HOST: ${APP_HOST}
+        ports:
+            - ${DB_PORT}:3306
+    npm:
+        <<: *defaults
+        image: ${APP_NPM_IMAGE}
+        container_name: ${CONTAINER_NAME_PREFIX}-npm
+        networks:
+            internal:
+                aliases:
+                    - npm
+        volumes:
+            - ./:/var/www
+    php-my-admin:
+        <<: *defaults
+        image: phpmyadmin
+        container_name: ${CONTAINER_NAME_PREFIX}-phpmyadmin
+        networks:
+            internal:
+                aliases:
+                    - phpmyadmin
+        environment:
+            PMA_HOST: ${DB_HOST}
+            PMA_USER: ${DB_USER}
+            PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+        ports:
+            - ${APP_IP}:${PHP_MY_ADMIN_PORT}:80
+    mailhog:
+        <<: *defaults
+        image: mailhog/mailhog
+        container_name: ${CONTAINER_NAME_PREFIX}-mailhog
+        networks:
+            internal:
+                aliases:
+                    - mailhog
+        ports:
+            - ${APP_IP}:${MAILHOG_PORT}:8025
+            - 1025:1025
