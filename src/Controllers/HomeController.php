@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use FFTrader\KeycloakSDK\IDP\Entity\Response\KeycloakTokenResponse;
-use FFTrader\KeycloakSDK\IDP\Exception\ExpiredTokenException;
-use FFTrader\KeycloakSDK\ImsClient;
-use FFTrader\KeycloakSDK\KeycloakClient;
+use App\Handlers\GetPostsHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Interfaces\RouteInterface;
-use Slim\Routing\RouteCollector;
 use Throwable;
 
 
-class HomeController extends AbstractController
+final class HomeController extends AbstractController
 {
+    public function __construct(ContainerInterface $container, private GetPostsHandler $postsHandler)
+    {
+        parent::__construct($container);
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -28,11 +28,13 @@ class HomeController extends AbstractController
      */
     public function index(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
+        $posts = $this->postsHandler->handle();
+
         return $this->view->render(
             $response,
             'pages/home.html.twig',
             [
-                'test' => 'test',
+                'posts' => $posts,
             ]
         );
     }
