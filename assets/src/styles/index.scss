@@ -1,1 +1,14 @@
+//functions & mixins
+@import "functions/rem";
+
+//vars
+@import "variables";
+
+//override agent styles
+@import "reboot";
+
+//vendor
 @import "bootstrap";
+
+//components
+@import "components/footer";

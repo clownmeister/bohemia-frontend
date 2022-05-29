@@ -8,7 +8,6 @@
     } %}
 {% endblock %}
 {% block content %}
-    {{ dump() }}
     <div class="row">
         {% set posts = posts ?? [] %}
         {% if posts|length == 0 %}

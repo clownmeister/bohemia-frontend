@@ -1,0 +1,11 @@
+$html-font-size: 16px; // = 1 rem
+
+@function rem($initial-size) {
+  $result: $initial-size / $html-font-size;
+  @return $result * 1rem;
+}
+
+@function em($initial-size, $reference: $html-font-size) {
+  $result: $initial-size / $reference;
+  @return $result * 1em;
+}
