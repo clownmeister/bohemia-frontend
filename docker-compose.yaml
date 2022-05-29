@@ -3,7 +3,8 @@ networks:
         external: false
         driver: bridge
         name: ${CONTAINER_NAME_PREFIX}-internal
-    bapi:
+    bapi-internal:
+        driver: overlay
         external: true
 
 x-defaults: &defaults
@@ -43,6 +44,7 @@ services:
         environment:
             PHP_IDE_CONFIG: "serverName={$APP_HOST}"
         networks:
+            bapi-internal:
             internal:
                 aliases:
                     - php

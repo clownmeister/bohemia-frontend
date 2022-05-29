@@ -31,7 +31,7 @@ final class HomeController extends AbstractController
     {
 //        $posts = $this->postsHandler->handle();
         $client = new Client();
-        $posts = $client->get('http://api.bohemia.docker:80/api/v1/posts');
+        $posts = $client->get('http://bapi/api/v1/posts');
         return $this->view->render(
             $response,
             'pages/home.html.twig',
