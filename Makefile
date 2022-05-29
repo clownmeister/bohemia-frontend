@@ -20,7 +20,7 @@ env:
 	}
 
 up:
-	@docker-compose up -d --force-recreate
+	@docker-compose up -d --force-recreate --remove-orphans
 
 php:
 	@echo "\e[103;30m******************************         sdk-php bash          ******************************\e[0m\n"

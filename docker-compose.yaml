@@ -3,6 +3,8 @@ networks:
         external: false
         driver: bridge
         name: ${CONTAINER_NAME_PREFIX}-internal
+    bapi:
+        external: true
 
 x-defaults: &defaults
     tty: true
