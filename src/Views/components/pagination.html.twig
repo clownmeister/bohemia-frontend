@@ -1,0 +1,36 @@
+{% set url = url ?? '/' %}
+
+{% set totalPages = (data.total / data.pageSize)|round(0, 'ceil') - 1 %}
+<nav aria-label="Pagination">
+    <hr class="my-0"/>
+    <ul class="pagination justify-content-center my-4">
+        {% for i in 0..totalPages %}
+            <li class="page-item {% if data.page == 0 %}disabled{% endif %}">
+                <a class="page-link" href="{{ url }}?page={% if data.page == 0 %}{{ i - 1 }}{% else %}0{% endif %}"
+                        {% if data.page == 0 %}
+                            tabindex="-1" aria-disabled="true"
+                        {% endif %}
+                >Newer</a>
+            </li>
+        {% endfor %}
+        {% for i in 0..totalPages %}
+            <li class="page-item {% if data.page == i %}active{% endif %}">
+                <a class="page-link" href="{{ url }}?page={{ i }}"
+                        {% if data.page == i %}
+                            tabindex="-1" aria-disabled="true"
+                        {% endif %}
+                >{{ i + 1 }}</a>
+            </li>
+        {% endfor %}
+        {% for i in 0..totalPages %}
+            <li class="page-item {% if data.page == totalPages %}disabled{% endif %}">
+                <a class="page-link"
+                   href="{{ url }}?page={% if data.page == totalPages %}{{ i + 1 }}{% else %}0{% endif %}"
+                        {% if data.page == totalPages %}
+                            tabindex="-1" aria-disabled="true"
+                        {% endif %}
+                >Older</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
