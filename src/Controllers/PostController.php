@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Dto\Request\GetPostsRequest;
-use App\Handlers\GetPostsHandler;
+use App\Dto\Request\GetPostRequest;
+use App\Handlers\GetPostHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
 
-final class HomeController extends AbstractController
+final class PostController extends AbstractController
 {
-    public function __construct(ContainerInterface $container, private GetPostsHandler $postsPostHandler)
+    public function __construct(ContainerInterface $container, private GetPostHandler $postHandler)
     {
         parent::__construct($container);
     }
@@ -29,16 +29,21 @@ final class HomeController extends AbstractController
      */
     public function index(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
-        $posts = $this->postsPostHandler->handle(
-            new GetPostsRequest(0, 10)
+        if (!array_key_exists('slug', $args)) {
+            return $this->notFound($response);
+        }
+
+        $post = $this->postHandler->handle(
+            new GetPostRequest($args['slug'])
         );
 
         return $this->view->render(
             $response,
-            'pages/home.html.twig',
+            'pages/post.html.twig',
             [
-                'posts' => $posts,
+                'post' => $post,
             ]
         );
     }
+
 }

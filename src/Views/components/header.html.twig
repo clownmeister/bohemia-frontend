@@ -1,0 +1,21 @@
+{% set title = title ?? 'Title' %}
+{% set description = description ?? 'Description' %}
+{% set imageUrl = imageUrl ?? null %}
+
+<header class="py-5 bg-light border-bottom mb-4"
+        {% if imageUrl != null %}
+            style="
+                    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3);
+                    background-size: cover;
+                    background-position: center;
+                    background-image: url('{{ imageUrl }}');
+                    "
+        {% endif %}
+>
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="fw-bolder {% if imageUrl != null %}text-light{% endif %}">{{ title }}</h1>
+            <p class="lead mb-0 {% if imageUrl != null %}text-light{% endif %}">{{ description }}</p>
+        </div>
+    </div>
+</header>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Settings\SettingsInterface;
 use DI\ContainerBuilder;
+use GuzzleHttp\Client;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -26,5 +27,8 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+        Client::class => function (ContainerInterface $c) {
+            return new Client(['base_uri' => $c->get(SettingsInterface::class)->get('bohemiaApiHost')]);
+        }
     ]);
 };

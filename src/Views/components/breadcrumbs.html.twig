@@ -1,0 +1,17 @@
+{% set data = data ?? [] %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% set count = 0 %}
+        {% for label,url in data %}
+            <li class="breadcrumb-item {% if count == data|length - 1 %}active{% endif %}">
+                {% if count != data|length - 1 %}
+                    <a href="{{ url }}">{{ label }}</a>
+                {% else %}
+                    {{ label }}
+                {% endif %}
+            </li>
+            {% set count = count + 1 %}
+        {% endfor %}
+    </ol>
+</nav>

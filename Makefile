@@ -1,5 +1,5 @@
-PHP = docker exec -it -w /var/www boh-php bash -c
-NPM = docker exec -it -w /var/www boh-npm bash -c
+PHP = docker exec -it -w /var/www/html boh-php bash -c
+NPM = docker exec -it -w /var/www/html boh-npm bash -c
 
 default:
 	@echo "\e[102;30m******************************         Izi Start          ******************************\e[0m\n"
@@ -20,15 +20,15 @@ env:
 	}
 
 up:
-	@docker-compose up -d --force-recreate
+	@docker-compose up -d --force-recreate --remove-orphans
 
 php:
 	@echo "\e[103;30m******************************         sdk-php bash          ******************************\e[0m\n"
-	docker exec -it -w /var/www boh-php bash
+	docker exec -it -w /var/www/html boh-php bash
 
 npm:
 	@echo "\e[103;30m******************************         sdk-php bash          ******************************\e[0m\n"
-	docker exec -it -w /var/www boh-npm bash
+	docker exec -it -w /var/www/html boh-npm bash
 
 
 composer-install:
