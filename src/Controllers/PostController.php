@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Dto\Request\GetPostRequest;
 use App\Handlers\GetPostHandler;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,15 +34,19 @@ final class PostController extends AbstractController
             return $this->notFound($response);
         }
 
-        $post = $this->postHandler->handle(
-            new GetPostRequest($args['slug'])
-        );
+        try {
+            $result = $this->postHandler->handle(
+                new GetPostRequest($args['slug'])
+            );
+        } catch (GuzzleException) {
+            return $this->notFound($response);
+        }
 
         return $this->view->render(
             $response,
             'pages/post.html.twig',
             [
-                'post' => $post,
+                'post' => $result,
             ]
         );
     }

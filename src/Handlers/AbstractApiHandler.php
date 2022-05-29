@@ -10,6 +10,8 @@ use App\Exception\HandlerException;
 use App\Exception\InvalidClassnameException;
 use App\Service\ServiceInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 use ReflectionClass;
 use ReflectionException;
 
@@ -58,6 +60,10 @@ abstract class AbstractApiHandler implements HandlerApiInterface
         return $this->serviceClass;
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws JsonException
+     */
     public function handle(?RequestInterface $request = null): array
     {
         return $this->getService()->call($request);
