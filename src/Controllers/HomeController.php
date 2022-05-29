@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Dto\Request\GetPostsRequest;
 use App\Handlers\GetPostsHandler;
-use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,9 +29,10 @@ final class HomeController extends AbstractController
      */
     public function index(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
-//        $posts = $this->postsHandler->handle();
-        $client = new Client();
-        $posts = $client->get('http://bapi/api/v1/posts');
+        $posts = $this->postsHandler->handle(
+            new GetPostsRequest(0, 10)
+        );
+
         return $this->view->render(
             $response,
             'pages/home.html.twig',

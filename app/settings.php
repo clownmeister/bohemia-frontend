@@ -11,7 +11,7 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         SettingsInterface::class => function () {
             return new Settings([
-                'bohemiaApiHost' => "api.bohemia.docker:80",
+                'bohemiaApiHost' => "bapi:80",
                 'displayErrorDetails' => true,
                 'logError' => false,
                 'logErrorDetails' => false,

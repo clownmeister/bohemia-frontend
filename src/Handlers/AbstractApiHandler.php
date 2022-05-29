@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Handlers;
 
+use App\Dto\Request\RequestInterface;
 use App\Exception\HandlerException;
 use App\Exception\InvalidClassnameException;
 use App\Service\ServiceInterface;
@@ -57,9 +58,9 @@ abstract class AbstractApiHandler implements HandlerApiInterface
         return $this->serviceClass;
     }
 
-    public function handle(): array
+    public function handle(?RequestInterface $request = null): array
     {
-        return $this->getService()->call();
+        return $this->getService()->call($request);
     }
 
     /**
