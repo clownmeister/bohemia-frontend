@@ -1,6 +1,6 @@
 {% set link = "/post/" ~ post.slug %}
 {% set featured = featured ?? false %}
-<div class="card mb-4">
+<div class="card mb-4 {% if featured == false %}col-lg-6{% endif %}">
     <a href="{{ link }}"><img class="card-img-top" src="{{ post.imageAbsoluteUrl }}" alt="Cover image"/></a>
     <div class="card-body">
         <div class="small text-muted">{{ post.createdAt|date() }}</div>
